@@ -1,0 +1,35 @@
+upstream ${BACKEND_SERVICE_NAME} {
+  server ${BACKEND_SERVICE_NAME}:${BACKEND_PORT};
+}
+upstream ${DB_ADMIN_SERVICE_NAME} {
+  server ${DB_ADMIN_SERVICE_NAME}:${DB_ADMIN_PORT};
+}
+
+server {
+  listen ${HTTP_SERVER_PORT};
+  server_name ${HTTP_SUBDOMAIN_PREFIX}${HTTP_SUBDOMAIN}.${HTTP_SERVER_HOST};
+  charset utf8;
+  access_log /var/log/nginx/crosschain.access.log;
+  error_log /var/log/nginx/crosschain.error.log warn;
+  set $nginx_statics /usr/share/nginx;
+
+  location /static/ {
+    autoindex on;
+    alias $nginx_statics/static/;
+  }
+
+  location /pgadmin/ {
+    proxy_pass http://${DB_ADMIN_SERVICE_NAME};
+    proxy_redirect off;
+    proxy_set_header X-Script-Name /pgadmin;
+    proxy_set_header   Host $host;
+  }
+
+  location / {
+    proxy_pass http://${BACKEND_SERVICE_NAME};
+    proxy_redirect off;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+}

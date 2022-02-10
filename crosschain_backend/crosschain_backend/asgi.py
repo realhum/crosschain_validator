@@ -1,0 +1,19 @@
+"""
+ASGI config for crosschain_backend project.
+
+It exposes the ASGI callable as a module-level variable named ``application``.
+
+For more information on this file, see
+https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
+"""
+
+from os import environ
+
+from django.core.asgi import get_asgi_application
+
+environ.setdefault(
+    'DJANGO_SETTINGS_MODULE',
+    'crosschain_backend.settings.base',
+)
+
+application = get_asgi_application()

@@ -1,0 +1,6 @@
+# EXCLUDE FILES
+*.sql*
+*.json
+*internal_service*
+
+*.log*

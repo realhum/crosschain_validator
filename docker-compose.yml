@@ -1,0 +1,154 @@
+version: '3'
+
+services:
+  database:
+    container_name: crosschain-${DATABASE_SERVICE_NAME}
+    restart: always
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${DATABASE_ORIGIN_USER}
+      POSTGRES_PASSWORD: ${DATABASE_ORIGIN_PASS}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    expose:
+      - ${DATABASE_PORT}
+
+  database-admin:
+    container_name: crosschain-${DB_ADMIN_SERVICE_NAME}
+    restart: always
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${DB_ADMIN_ORIGIN_USER_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${DB_ADMIN_ORIGIN_PASS}
+      PGADMIN_LISTEN_ADDRESS: ${DB_ADMIN_HOST}
+      PGADMIN_LISTEN_PORT: ${DB_ADMIN_PORT}
+    depends_on:
+      - database
+    expose:
+      - ${DB_ADMIN_PORT}
+
+  backend:
+    container_name: crosschain-${BACKEND_SERVICE_NAME}
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    env_file: .env
+    volumes:
+      - ./crosschain_backend:/code:cached
+      - statics_volume:/code/static
+    depends_on:
+      - database
+    expose:
+      - ${BACKEND_PORT}
+    command:
+    - gunicorn
+    - -c
+    - gunicorn.py
+    - crosschain_backend.asgi:application
+    - -k
+    - uvicorn.workers.UvicornWorker
+    - --reload
+
+  backend-scanners:
+    container_name: crosschain-${BACKEND_SERVICE_NAME}-scanners
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    env_file: .env
+    volumes:
+      - ./crosschain_backend:/code:cached
+    depends_on:
+      - database
+      - celery-worker
+    command:
+    - python
+    - scanners.py
+
+  celery-broker:
+    container_name: crosschain-${BROKER_SERVICE_NAME}
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/celery_broker.Dockerfile
+    expose:
+      - ${BROKER_PORT}
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  celery-worker:
+    container_name: crosschain-${CELERY_SERVICE_NAME}
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    env_file: .env
+    volumes:
+      - ./crosschain_backend:/code:cached
+    depends_on:
+      - celery-broker
+    # expose:
+    #   - ${BACKEND_PORT}
+    command:
+    - celery
+    - --app
+    - crosschain_backend
+    - worker
+    - --loglevel=DEBUG
+    - -E
+    - --logfile=celery.log
+
+  celery-beat:
+    container_name: crosschain-${CELERY_BEAT_SERVICE_NAME}
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    env_file: .env
+    volumes:
+      - ./crosschain_backend:/code:cached
+    depends_on:
+      - celery-broker
+      - celery-worker
+    # expose:
+    #   - ${BACKEND_PORT}
+    command:
+    - celery
+    - --app
+    - crosschain_backend
+    - beat
+    - --loglevel=DEBUG
+    - -S
+    - django
+
+  http-server:
+    container_name: crosschain-${HTTP_SERVER_SERVICE_NAME}
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/http_server.Dockerfile
+    environment:
+      HTTP_SERVER_HOST: ${HTTP_SERVER_HOST}
+      HTTP_SERVER_PORT: ${HTTP_SERVER_PORT}
+      HTTP_SUBDOMAIN: ${HTTP_SUBDOMAIN}
+      HTTP_SUBDOMAIN_PREFIX: ${HTTP_SUBDOMAIN_PREFIX}
+      NGINX_ENVSUBST_TEMPLATE_DIR: ${HTTP_TEMPLATE_DIR}
+      NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx/sites-available
+      BACKEND_SERVICE_NAME: ${BACKEND_SERVICE_NAME}
+      BACKEND_PORT: ${BACKEND_PORT}
+      DB_ADMIN_SERVICE_NAME: ${DB_ADMIN_SERVICE_NAME}
+      DB_ADMIN_PORT: ${DB_ADMIN_PORT}
+    volumes:
+      - statics_volume:/usr/share/nginx/static:ro
+    expose:
+      - ${HTTP_SERVER_PORT}
+    ports:
+      - '${HTTP_SERVER_PORT}:${HTTP_SERVER_PORT}'
+    depends_on:
+      - backend
+      - database-admin
+
+volumes:
+  db_volume:
+  statics_volume:

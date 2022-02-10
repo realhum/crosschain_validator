@@ -1,0 +1,21 @@
+# EXCLUDE FORLDERS
+.devcontainer
+.idea
+.vscode
+__pycache__
+static
+
+# EXCLUDE FILES
+.env*
+*.sql*
+**/migrations/????_**.py
+*.json
+*internal_service*
+
+*.log*
+
+*.pem
+*.key
+
+# EXCLUSIONS
+!.env.example
