@@ -41,20 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 3RD-PARTY EXTENTIONS
-    'corsheaders',
     'django_celery_beat',
     'django_extensions',
-    'django_filters',
-    'drf_spectacular',
-    'rest_framework',
-    'rangefilter',
     ###
 
     # APPS
     'contracts',
     'networks',
     'notifications',
-    'trades',
     'tokens',
     'users',
     'validators',
@@ -64,7 +58,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -154,23 +147,6 @@ STATIC_ROOT = '/code/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
-
-# CACHING
-CACHE = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'TIMEOUT': int(environ.get('DEFAULT_CACHE_TIMEOUT')),
-        'OPTIONS': {
-            # Максимальное количество элементов в кеше.
-            'MAX_ENTRIES': int(environ.get('MAX_ENTRIES')),
-            # Часть элементов, которые нужно удалить.
-            # Вычисляется по формуле: MAX_ENTRIES / CULL_FREQUENCY.
-            'CULL_FREQUENCY': int(environ.get('CULL_FREQUENCY')),
-        }
-    }
-}
-
-DEFAULT_VIEW_CACHE_TIMEOUT = int(environ.get('DEFAULT_VIEW_CACHE_TIMEOUT'))
 
 # LOGGING
 LOGGING_CURRENT_DATE = timezone.now()
@@ -335,7 +311,7 @@ PRIVATE_PASSWORD_FOR_SIGNATURE_API = str(
 
 # OTHER
 BLOCK_RANGE = int(environ.get('BLOCK_RANGE'))
-RELAYER_HTTP_URL = str(environ.get('RELAYER_HTTP_URL'))
+MIN_CONFIRMATION_BLOCK_COUNT = int(environ.get('MIN_CONFIRMATION_BLOCK_COUNT'))
 DEFAULT_SCANNER_TIMEOUT = int(environ.get('DEFAULT_SCANNER_TIMEOUT'))
 DEFAULT_SCANNER_TIMEOUT_FAST = int(environ.get('DEFAULT_SCANNER_TIMEOUT_FAST'))
 

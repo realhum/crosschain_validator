@@ -18,6 +18,16 @@ DEFAULT_SCANNER_TIMEOUT_FAST = settings.DEFAULT_SCANNER_TIMEOUT_FAST
 
 
 class Scanner(Process):
+    """
+    Scanner of EVM blockchains. After fetching transaction from logs execute
+    Handler function.
+
+    :param network: name of blockchain in DataBase
+    :param contract: contract address which will be scanned
+    :param events: list of events which need to check
+    :param event_handlers:  
+    """
+
     def __init__(
         self,
         name: str,

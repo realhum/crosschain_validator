@@ -40,6 +40,9 @@ from .services.functions import (
     reset_connection,
 )
 
+DEFAULT_POLL_LATENCY = 1
+DEFAULT_TXN_TIMEOUT = 120
+
 
 class Network(AbstractBaseModel):
     title = CharField(
@@ -191,8 +194,8 @@ class CustomRpcProvider:
     def wait_for_transaction_receipt(
         self,
         txn_hash: HASH_LIKE,
-        timeout: int = settings.DEFAULT_TXN_TIMEOUT,
-        poll_latency: int = settings.DEFAULT_POLL_LATENCY
+        timeout: int = DEFAULT_TXN_TIMEOUT,
+        poll_latency: int = DEFAULT_POLL_LATENCY
     ):
         return self.rpc_provider.eth.waitForTransactionReceipt(
             txn_hash,
@@ -521,7 +524,7 @@ class Transaction(AbstractBaseModel):
     def waiting_transaction_receipt(
         rpc_provider: CustomRpcProvider,
         txn_hash: HASH_LIKE,
-        timeout: int = settings.DEFAULT_TXN_TIMEOUT,
+        timeout: int = DEFAULT_TXN_TIMEOUT,
         poll_latency: int = 1
     ):
         return rpc_provider.wait_for_transaction_receipt(

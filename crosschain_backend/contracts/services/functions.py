@@ -37,6 +37,12 @@ def _get_params_to_transfer_to_other_blockchain(
     event: AttributeDict,
     tx_hash: str = '',
 ) -> AttributeDict:
+    """
+    Returns params which will be used for trade in target network
+
+    :param
+    """
+
     # AttributeDict(
     #     {
     #         'RBCAmountIn': <transit_token_amount_in:int>,
@@ -262,8 +268,6 @@ def _get_signature(
     transit_token_amount_in: Union[int, Wei],
 ):
     if not all((transit_token_amount_in,)):
-        # TODO: Сделать соответствующее исключение для параметоров
-        # транзакций с нулевыми значениями.
         raise Exception(
             f'Field \"transit_token_amount_in\" ({transit_token_amount_in=}) '
             'not be equal by 0.'
@@ -286,7 +290,6 @@ def _get_signature(
             blockchain_id,
         )
 
-        # Проверка "свежести" транзакции.
         _check_is_processed_transaction(
             contract,
             original_txn_hash,

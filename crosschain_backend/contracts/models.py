@@ -78,24 +78,6 @@ class Contract(AbstractBaseModel):
         verbose_name='Hash of creation',
         blank=True,
     )
-    percent_of_encreasing_gas_price = DecimalField(
-        max_digits=3,
-        decimal_places=2,
-        verbose_name='Percent of encreasing gas price',
-        default=settings.DEFAULT_INCREASING_PERCENT,
-    )
-    min_gas_price = DecimalField(
-        max_digits=12,
-        decimal_places=0,
-        verbose_name='Min gas price',
-        default=settings.DEFAULT_MIN_GAS_PRICE,
-    )
-    default_average_volume_gas_used = DecimalField(
-        max_digits=MAX_WEI_DIGITS,
-        decimal_places=0,
-        verbose_name='Default average volume gas used',
-        default=settings.DEFAULT_AVERAGE_VOLUME_GAS_USED,
-    )
     current_gas_price = DecimalField(
         max_digits=MAX_WEI_DIGITS,
         decimal_places=0,
