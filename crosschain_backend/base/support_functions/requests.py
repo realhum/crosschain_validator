@@ -6,7 +6,7 @@ from rest_framework.status import HTTP_200_OK
 
 def send_get_request(url, params=None):
     """
-        Return HTTP GET decoded JSON response as dict.
+    Return HTTP GET decoded JSON response as dict.
     """
     response = request_get(url, params=params)
 

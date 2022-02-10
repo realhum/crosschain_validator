@@ -7,6 +7,10 @@ from ..models import ValidatorSwap
 
 
 def process_swap(swap_id):
+    """
+
+    """
+
     info('check swap')
     try:
         with transaction.atomic():

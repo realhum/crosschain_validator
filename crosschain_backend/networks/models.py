@@ -45,6 +45,14 @@ DEFAULT_TXN_TIMEOUT = 120
 
 
 class Network(AbstractBaseModel):
+    """
+    Network model which represents blockchain network.
+    Used for interaction with blockchain
+
+    - title - blockchain name
+    - rpc_url_list - list of rpc url nodes
+    """
+
     title = CharField(
         max_length=255,
         verbose_name='Title',
@@ -64,6 +72,10 @@ class Network(AbstractBaseModel):
 
     @property
     def rpc_provider(self):
+        """
+        Returns first working Web3 rpc provider
+        """
+
         message = ''
 
         for rpc_url in self.rpc_url_list:
@@ -94,6 +106,10 @@ class Network(AbstractBaseModel):
         raise ProviderNotConnected(message)
 
     def get_rpc_provider(self, url_number):
+        """
+        Returns Web3 rpc provider from list by it's index
+        """
+
         if url_number >= len(self.rpc_url_list):
             raise CustomRpcProviderExceedListRange(
                 f"Can't connect to \"{self.title}\" network"
@@ -258,6 +274,10 @@ class CustomRpcProvider:
 
 
 class Transaction(AbstractBaseModel):
+    """
+    Transaction model which represents transactions in blockchain
+    """
+
     network = ForeignKey(
         to=Network,
         on_delete=PROTECT,
@@ -429,6 +449,10 @@ class Transaction(AbstractBaseModel):
 
     @classmethod
     def add_transaction(cls, network_id: UUID, txn_hash: HASH_LIKE):
+        """
+        Saves Transaction instance in DataBase
+        """
+
         network = Network.get_network(network_id=network_id)
         try:
             if network.title == NETWORK_NAMES.get('solana'):

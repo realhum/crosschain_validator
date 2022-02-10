@@ -1,3 +1,4 @@
+from functools import wraps
 from logging import exception, info
 from time import sleep
 
@@ -7,6 +8,13 @@ from notifications.services.functions import send_error_notification
 
 
 def auto_restart(function, timeout=15):
+    """
+    Decorator for blockchain scanner.
+    Re-execute function if some error occurred and
+    sends error message to telegram.
+    """
+
+    @wraps(function)
     def wrapper(*args, **kwargs):
         while 1:
             try:

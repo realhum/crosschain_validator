@@ -40,7 +40,9 @@ def _get_params_to_transfer_to_other_blockchain(
     """
     Returns params which will be used for trade in target network
 
-    :param
+    :param rpc_provider: custom rpc provider of source network
+    :param event: event data of transaction
+    :param tx_hash: hash of the source transaction
     """
 
     # AttributeDict(
@@ -82,16 +84,12 @@ def _get_params_to_transfer_to_other_blockchain(
     amount_spent = original_txn.event_data \
         .get('args') \
         .get('amountSpent')
-    # ex "rbc_amount_in"
+
     transit_token_amount_in = original_txn.event_data \
         .get('args') \
         .get('RBCAmountIn')
     token_out_min = original_txn.data.get('params')[5]
 
-    # if blockchain_id == 8:
-    #     new_address = original_txn.event_data.get('args').get('newAddress')
-    #     second_path = original_txn.event_data.get('args').get('path')
-    # else:
     new_address = original_txn.data.get('params')[6]
     second_path = original_txn.data.get('params')[3]
 
@@ -115,7 +113,11 @@ def _get_params_to_transfer_to_other_blockchain(
     )
 
 
-def _sign_hash(hash: HASH_LIKE):
+def _sign_hash(hash: HASH_LIKE) -> str:
+    """
+    Signs hash string
+    """
+
     if not isinstance(hash, str):
         hash = hash.hex()
 
@@ -134,36 +136,20 @@ def _sign_hash(hash: HASH_LIKE):
     return signed_hash.signature.hex()
 
 
-def _check_exists_contract_in_other_blockchain(
-    contract: Contract,
-    blockchain_id: int,
-    original_txn_hash: HASH_LIKE,
-    hashed_params: HexBytes,
-):
-    contract_status = contract.exists_contract_in_other_blockchain(
-        blockchain_id
-    )
-
-    if not contract_status:
-        raise ContractDoesNotExistsInOtherBlockChain(
-            CONTRACT_ERROR.format(
-                f'Contract with the \"{contract.address}\" does not exists.'
-            ),
-            {
-                'contract': contract,
-                'original_txn_hash': original_txn_hash,
-                'hashed_params': hashed_params,
-            }
-        )
-
-    return True
-
-
 def _check_contract_is_paused(
     contract: Contract,
     original_txn_hash: HASH_LIKE,
     hashed_params: HexBytes,
 ):
+    """
+    Checks if contract paused right now or not
+    using contract read method 'paused'
+
+    :param contract: Contract instance which will be checked
+    :param original_txn_hash: hash of transaction in source network, for logging
+    :param hashed_params: hashed params, for logging
+    """
+
     contract_status = contract.is_paused
 
     if not contract_status:
@@ -186,6 +172,15 @@ def _check_is_processed_transaction(
     original_txn_hash: HASH_LIKE,
     hashed_params: HexBytes = '',
 ):
+    """
+    Checks if transaction was already completed in target network or not
+    using contract read method 'processedTransactions'
+
+    :param contract: Contract instance which will be checked
+    :param original_txn_hash: hash of transaction in source network, for logging
+    :param hashed_params: hashed params, for logging
+    """
+
     contract_status = contract.is_processed_transaction(original_txn_hash)
 
     if isinstance(original_txn_hash, (bytes, HexBytes)):
@@ -220,6 +215,11 @@ def _check_is_processed_transaction(
 
 
 def _transform_params(params: AttributeDict, from_contract: Contract):
+    """
+    Transform transit_token_amount_in in params if has different decimals
+    in both blockchains
+    """
+
     to_contract = Contract.get_contract_by_blockchain_id(
         blockchain_id=params.blockchain_id,
     )
@@ -240,11 +240,20 @@ def _transform_params(params: AttributeDict, from_contract: Contract):
 
 
 def get_hash_packed_solana(
-    new_address,
-    rbc_amount_in,
-    original_txn_hash,
-    blockchain_id,
+    new_address: str,
+    rbc_amount_in: int,
+    original_txn_hash: HASH_LIKE,
+    blockchain_id: int,
 ) -> str:
+    """
+    Hashes parameters for Solana blockchain
+
+    :param new_address: wallet address in target network
+    :param rbc_amount_in: amount of transit token which will be used in target network
+    :param original_txn_hash: hash of the source transaction
+    :param blockchain_id: number of target network
+    """
+
     if not isinstance(original_txn_hash, str):
         original_txn_hash = original_txn_hash.hex()
 
@@ -266,7 +275,16 @@ def _get_signature(
     blockchain_id: int,
     new_address: str,
     transit_token_amount_in: Union[int, Wei],
-):
+) -> str:
+    """
+    Returns signature of hashed params
+
+    :param original_txn_hash: hash of the source transaction
+    :param blockchain_id: number of target network
+    :param new_address: wallet address in target network
+    :param transit_token_amount_in: amount of transit token which will be used in target network
+    """
+
     if not all((transit_token_amount_in,)):
         raise Exception(
             f'Field \"transit_token_amount_in\" ({transit_token_amount_in=}) '

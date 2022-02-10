@@ -28,43 +28,39 @@ if __name__ == "__main__":
         {
             'name': 'ethereum',
             'rpc_url_list': [
-                "https://speedy-nodes-nyc.moralis.io/26d7db44f32316b88e81b679/eth/mainnet",
-                "https://speedy-nodes-nyc.moralis.io/26d7db44f32316b88e81b679/eth/mainnet",
-                "https://speedy-nodes-nyc.moralis.io/7bd080fb0b17e63d491392c0/eth/mainnet",
-                "https://mainnet.infura.io/v3/05bdb9eede9844d2bb4e770e9383c5b5"],
+                "https://api.mycryptoapi.com/eth",
+                "https://rpc.flashbots.net/",
+                "https://eth-mainnet.gateway.pokt.network/v1/5f3453978e354ab992c4da79",
+            ],
         },
         {
             'name': 'binance-smart-chain',
             'rpc_url_list': [
-                "https://speedy-nodes-nyc.moralis.io/c9a93c21ca876be0110fc37d/bsc/mainnet",
-                "https://speedy-nodes-nyc.moralis.io/7bd080fb0b17e63d491392c0/bsc/mainnet",
-                "https://bsc-dataseed.binance.org/"],
+                "https://bsc-dataseed.binance.org/",
+            ],
         },
         {
             'name': 'polygon',
-            'rpc_url_list': ["https://polygon-rpc.com",
-                             "https://speedy-nodes-nyc.moralis.io/ec528eb781d1b04453eae377/polygon/mainnet",
-                             "https://speedy-nodes-nyc.moralis.io/7bd080fb0b17e63d491392c0/polygon/mainnet"],
+            'rpc_url_list': [
+                "https://polygon-rpc.com",
+            ],
         },
         {
             'name': 'avalanche',
             'rpc_url_list': [
-                "https://speedy-nodes-nyc.moralis.io/8a981696c381062934aa0461/avalanche/mainnet",
-                "https://speedy-nodes-nyc.moralis.io/7bd080fb0b17e63d491392c0/avalanche/mainnet",
-                "https://api.avax.network/ext/bc/C/rpc"],
+                "https://api.avax.network/ext/bc/C/rpc",
+            ],
         },
         {
             'name': 'moonriver',
             'rpc_url_list': [
-                "https://moonriver-api.bwarelabs.com/e72ceb4c-1e99-4e9f-8f3c-83f0152ad69f",
                 "https://rpc.moonriver.moonbeam.network",
-                "https://pub.elara.patract.io/moonriver"],
+                "https://pub.elara.patract.io/moonriver",
+            ],
         },
         {
             'name': 'fantom',
-            'rpc_url_list': ["https://rpc.ftm.tools",
-                             "https://speedy-nodes-nyc.moralis.io/48ed7d872b996332ff3bad66/fantom/mainnet",
-                             "https://speedy-nodes-nyc.moralis.io/7bd080fb0b17e63d491392c0/fantom/mainnet"],
+            'rpc_url_list': ["https://rpc.ftm.tools"],
         },
         {
             'name': 'harmony',

@@ -25,7 +25,8 @@ class Scanner(Process):
     :param network: name of blockchain in DataBase
     :param contract: contract address which will be scanned
     :param events: list of events which need to check
-    :param event_handlers:  
+    :param event_handlers: method for every type of event
+    :param start_block: block number from which start scanning
     """
 
     def __init__(

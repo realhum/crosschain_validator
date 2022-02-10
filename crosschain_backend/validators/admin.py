@@ -1,38 +1,7 @@
 from django.contrib.admin import ModelAdmin, register
 from rangefilter.filters import DateTimeRangeFilter
 
-from .models import Validator, ValidatorSwap
-
-
-@register(Validator)
-class ValidatorAdmin(ModelAdmin):
-    fields = (
-        'title',
-        'type',
-        '_is_displayed',
-    )
-    list_display = (
-        'id',
-        'title',
-        'type',
-        '_created_at',
-        '_updated_at',
-        '_is_displayed',
-    )
-    list_filter = (
-        ('_created_at', DateTimeRangeFilter),
-        ('_updated_at', DateTimeRangeFilter),
-        '_is_displayed',
-    )
-    search_fields = (
-        '=id',
-        'title',
-        'trade__from_onchain_swap__transaction__hash',
-    )
-    ordering = (
-        '-_created_at',
-    )
-    empty_value_display = '-empty-'
+from .models import ValidatorSwap
 
 
 @register(ValidatorSwap)

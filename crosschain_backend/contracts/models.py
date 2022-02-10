@@ -38,6 +38,18 @@ from .exceptions import (
 
 # Create your models here.
 class Contract(AbstractBaseModel):
+    """
+    Contract model which used for work with smart-contracts in project
+
+    - title - name of contract
+    - type - different types of contract
+    - address - contract's address in blockchain
+    - network - Network model of contract's blockchain
+    - abi - contract's abi
+    - hash_of_creation - hash of contract's creation transaction
+    - blockchain_number - number of contract which set in every other contract
+    """
+
     TYPE_CROSSCHAIN_ROUTING = 'crosschain routing'
     TYPE_BRIDGE = 'bridge'
     TYPE_TOKEN = 'token'
@@ -78,23 +90,9 @@ class Contract(AbstractBaseModel):
         verbose_name='Hash of creation',
         blank=True,
     )
-    current_gas_price = DecimalField(
-        max_digits=MAX_WEI_DIGITS,
-        decimal_places=0,
-        verbose_name='Actual gas price',
-        default=0,
-    )
     blockchain_number = PositiveIntegerField(
         verbose_name='Blockchain_number',
         default=0,
-    )
-    router_contract = ForeignKey(
-        "self",
-        on_delete=PROTECT,
-        related_name='router_contract_contracts',
-        verbose_name='Router contract',
-        blank=True,
-        null=True,
     )
 
     class Meta:
@@ -117,6 +115,10 @@ class Contract(AbstractBaseModel):
         provider: CustomRpcProvider = None,
         address: str = None,
     ):
+        """
+        Returns web3 contract object
+        """
+
         if not provider:
             provider = CustomRpcProvider(self.network)
         if not address:
@@ -138,6 +140,10 @@ class Contract(AbstractBaseModel):
         params,
         contract_address='',
     ):
+        """
+        Calls contract's read method
+        """
+
         custom_rpc_provider = CustomRpcProvider(self.network)
 
         return custom_rpc_provider.contract_function_call(
@@ -222,6 +228,10 @@ class Contract(AbstractBaseModel):
         txn_data_input: dict,
         provider: CustomRpcProvider = None
     ):
+        """
+        Decodes transaction's input for next processing
+        """
+
         if not provider:
             provider = CustomRpcProvider(self.network)
 
@@ -262,10 +272,6 @@ class Contract(AbstractBaseModel):
                 txn_data_decoded_input.update({txn_data_value: value})
 
         return txn_data_decoded_input
-
-    @staticmethod
-    def decode_contract_function():
-        pass
 
     def exists_contract_in_other_blockchain(
         self,
@@ -308,31 +314,6 @@ class Contract(AbstractBaseModel):
             contract_function_name='numOfThisBlockchain',
             params=(),
         )
-
-    def add_router_contract(self):
-        router_address = self.router_address
-
-        router_contract = Contract.displayed_objects.filter(
-            address__iexact=router_address,
-            network=self.network,
-        ).first()
-
-        if not router_contract:
-            router_contract = Contract(
-                title='',
-                type=self.TYPE_BRIDGE,
-                address=router_address,
-                network=self.network,
-                abi={},
-                hash_of_creation='',
-            )
-            router_contract.save()
-
-        self.router_contract = router_contract
-
-        self.save()
-
-        return router_contract
 
     @cached_property
     def is_paused(self) -> bool:

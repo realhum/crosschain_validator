@@ -5,10 +5,6 @@ from .models import Token
 
 
 class TokenSerializer(ModelSerializer):
-    # address = CharField()
-    # name = CharField()
-    # symbol = CharField()
-    # decimals = IntegerField()
     network = CharField(source='network.title')
 
     class Meta:

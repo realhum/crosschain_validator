@@ -34,6 +34,16 @@ from .exceptions import (
 
 # Create your models here.
 class Token(AbstractBaseModel):
+    """
+    Token model which represents blockchain's token
+
+    - name - token's name in blockchain
+    - symbol - token's symbol in blockchain
+    - address - token's address in blockchain
+    - decimals - token's decimals in blockchain
+    - network - blockchain network
+    """
+
     name = CharField(
         max_length=512,
         verbose_name='Name',
@@ -73,6 +83,10 @@ class Token(AbstractBaseModel):
 
     @classmethod
     def add_token(cls, network_id: UUID, address: ADDRESS_LIKE):
+        """
+        Saves Token instance in DataBase
+        """
+
         network = Network.get_network(network_id)
         # TODO: Загружать общий для токенов контракт.
         token_contract = Contract \
@@ -149,6 +163,10 @@ class Token(AbstractBaseModel):
         network_id: UUID,
         address: ADDRESS_LIKE,
     ):
+        """
+        Saves Solana type Token instance in DataBase
+        """
+
         network = Network.get_network(network_id)
 
         try:
@@ -184,6 +202,10 @@ class Token(AbstractBaseModel):
         address: str,
         token_type=ETH_LIKE_TYPE
     ):
+        """
+        Returns Token instance by it's address and network
+        """
+
         network = Network.get_network(network_id)
 
         if token_type == ETH_LIKE_TYPE:

@@ -20,36 +20,11 @@ from networks.models import Transaction, CustomRpcProvider
 from networks.types import HASH_LIKE
 
 
-class Validator(AbstractBaseModel):
-    VALIDATOR_TYPE_MAIN = 'main'
-    VALIDATOR_TYPE_SUPPORT = 'support'
-
-    _VALIDATOR_TYPES = (
-        (VALIDATOR_TYPE_MAIN, VALIDATOR_TYPE_MAIN.upper()),
-        (VALIDATOR_TYPE_SUPPORT, VALIDATOR_TYPE_SUPPORT.upper()),
-    )
-
-    title = CharField(
-        max_length=255,
-        verbose_name='Title',
-        blank=True,
-    )
-    type = CharField(
-        max_length=255,
-        verbose_name='Type',
-        choices=_VALIDATOR_TYPES,
-        default=VALIDATOR_TYPE_MAIN,
-    )
-
-    class Meta:
-        db_table = 'validators'
-        ordering = '-_created_at',
-
-    def __str__(self) -> str:
-        return f'Validator title \"{self.title}\"'
-
-
 class ValidatorSwap(AbstractBaseModel):
+    """
+
+    """
+
     STATUS_CREATED = 'created'
     STATUS_WAITING_FOR_DATA = 'waiting for data'
     STATUS_SIGNATURE_CREATED = 'signature created'

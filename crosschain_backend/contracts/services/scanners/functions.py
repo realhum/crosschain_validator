@@ -9,7 +9,15 @@ def get_scanner(
     network_title: str,
     contract_address: str,
     start_block: int = None,
-):
+) -> Scanner:
+    """
+    Returns Scanner instance
+
+    :param name: name of scanner for logging
+    :param network_title: name of blockchain in DataBase
+    :param contract_address: contract address which will be scanned
+    :param start_block: block number from which start scanning
+    """
     return Scanner(
         name=name,
         network=network_title,
@@ -17,7 +25,6 @@ def get_scanner(
         events=(
             'TransferTokensToOtherBlockchainUser',
             'TransferCryptoToOtherBlockchainUser',
-            # 'TransferFromOtherBlockchain',
         ),
         event_handlers=VALIDATOR_HANDLERS,
         start_block=start_block,

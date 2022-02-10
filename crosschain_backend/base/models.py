@@ -11,22 +11,19 @@ from django.db.models.manager import Manager
 
 # Create your models here.
 class BaseDisplayedManager(Manager):
+    """
+    Modified Manager for AbstractBaseModel
+    """
+
     def get_queryset(self):
         return super().get_queryset().filter(_is_displayed=True)
 
 
 class AbstractBaseModel(Model):
     """
-    Абстрактная базовая модель. Содержит служебные поля.
-
-    ---
-
-    Поля:
-    - id : uuid - автоинкремент, ключевое поле, только для чтения;
-    - created_at : date-time, автодобавляемое;
-    - updated_at : date-time, автообновляемое;
-    - is_displayed : bool, по-умолчанию True.
+    Abstract Base model which inherited by every model in project
     """
+
     id = UUIDField(
         primary_key=True,
         editable=False,
@@ -50,4 +47,4 @@ class AbstractBaseModel(Model):
     # --
 
     class Meta:
-        abstract=True
+        abstract = True

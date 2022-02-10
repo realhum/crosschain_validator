@@ -32,6 +32,14 @@ def create_signature_transfer_tokens_handler(
     contract: Contract,
     event: AttributeDict,
 ):
+    """
+    Creates validator swap with signed signature which will be send to relayer
+
+    :param rpc_provider: custom rpc provider of source network
+    :param contract: Contract object of source network
+    :param event: event data of transaction
+    """
+
     validator_swap = ValidatorSwap.create_swap(
         rpc_provider,
         contract,
