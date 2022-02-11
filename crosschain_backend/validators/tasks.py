@@ -18,6 +18,10 @@ def process_swap_task(swap_id):
 
 @celery_app.task
 def update_swaps_task():
+    """
+    Process swaps which signatures wasn't send
+    """
+
     try:
         for swap in ValidatorSwap.displayed_objects.exclude(
                 status__in=(
