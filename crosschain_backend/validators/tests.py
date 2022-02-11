@@ -21,6 +21,7 @@ class ValidatorTestCase(TestCase):
         "transactionHash": "0xb735a892bc6504976c8d1953d56fa5122546c9bbb3e8770d4083430363285999",
         "transactionIndex": 71,
     }
+    signature = "44e35055e9fc46d382f9cab03d418e88ab84fb86994ee0339390be5b2bc181237a22830e9eb1239be2693a918f9b7892aa6d787959389c2c7c255a2c5a3c15c01b"
 
     def setUp(self):
         bsc_network = Network.displayed_objects.create(
@@ -89,7 +90,6 @@ class ValidatorTestCase(TestCase):
             )
         )
         contract = Contract.get_contract_by_blockchain_id(1)
-        signature = "44e35055e9fc46d382f9cab03d418e88ab84fb86994ee0339390be5b2bc181237a22830e9eb1239be2693a918f9b7892aa6d787959389c2c7c255a2c5a3c15c01b"
 
         validator_swap =ValidatorSwap.create_swap(
             rpc_provider=rpc_provider,
@@ -98,7 +98,7 @@ class ValidatorTestCase(TestCase):
             event=self.event_data,
         )
 
-        validator_swap.signature = signature
+        validator_swap.signature = self.signature
 
         validator_swap.send_signature_to_relayer()
 

@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'contracts',
     'networks',
     'notifications',
-    'tokens',
     'users',
     'validators',
     ###

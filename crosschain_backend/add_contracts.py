@@ -14,14 +14,12 @@ if __name__ == "__main__":
     from networks.models import Network, Transaction
     from contracts.models import Contract
     from validators.models import ValidatorSwap
-    from tokens.models import Token
 
     ValidatorSwap.objects.all().delete()
     Transaction.objects.all().delete()
 
     Contract.objects.filter(type=Contract.TYPE_CROSSCHAIN_ROUTING).delete()
     Contract.objects.all().delete()
-    Token.objects.all().delete()
     Network.objects.all().delete()
 
     networks = [
