@@ -8,7 +8,7 @@ from ..models import ValidatorSwap
 
 def process_swap(swap_id):
     """
-
+    Process validator swap depends on it's status
     """
 
     info('check swap')

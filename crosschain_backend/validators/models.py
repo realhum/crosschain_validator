@@ -22,7 +22,13 @@ from networks.types import HASH_LIKE
 
 class ValidatorSwap(AbstractBaseModel):
     """
+    ValidatorSwap model which used for creating and
+    sending signatures to relayer.
 
+    - contract - Contract instance on which transaction was found
+    - transaction - Transaction instance of found transaction while scanning
+    - signature - hashed params signed by Validator private key
+    - status - current status of swap
     """
 
     STATUS_CREATED = 'created'
@@ -74,6 +80,10 @@ class ValidatorSwap(AbstractBaseModel):
         )
 
     def send_signature_to_relayer(self):
+        """
+        Sends created by Validator signature.
+        """
+
         params = {
             'password': settings.PRIVATE_PASSWORD_FOR_SIGNATURE_API,
         }
@@ -125,6 +135,15 @@ class ValidatorSwap(AbstractBaseModel):
         txn_hash: HASH_LIKE,
         event: dict,
     ):
+        """
+        Save ValidatorSwap instance in DataBase
+
+        :param rpc_provider: custom rpc provider of source network
+        :param contract: Contract object of source network
+        :param txn_hash: hash of the found transaction
+        :param event: event data of transaction
+        """
+
         if isinstance(txn_hash, HexBytes):
             txn_hash = txn_hash.hex()
 
