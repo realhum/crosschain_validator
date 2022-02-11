@@ -10,12 +10,10 @@ class ContractModelAdmin(ModelAdmin):
         'title',
         'type',
         'address',
-        # 'provider',
         'network',
         'abi',
         'blockchain_number',
         'hash_of_creation',
-        'router_contract',
         '_is_displayed',
     )
     list_display = (
@@ -25,7 +23,6 @@ class ContractModelAdmin(ModelAdmin):
         'address',
         'network',
         'blockchain_number',
-        'router_contract',
         '_created_at',
         '_updated_at',
         '_is_displayed',
@@ -49,5 +46,4 @@ class ContractModelAdmin(ModelAdmin):
     empty_value_display = '-empty-'
     autocomplete_fields = (
         'network',
-        'router_contract',
     )

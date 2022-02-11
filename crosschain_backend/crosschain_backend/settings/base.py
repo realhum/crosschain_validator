@@ -30,6 +30,8 @@ SECRET_KEY_ID = environ.get('BACKEND_SECRET_KEY_ID')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(environ.get('BACKEND_DEBUG_MODE'))
 
+BACKEND_SETTINGS_TYPE = environ.get('BACKEND_SETTINGS_TYPE')
+
 # Application definition
 
 INSTALLED_APPS = [
