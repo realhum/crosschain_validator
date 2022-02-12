@@ -8,7 +8,6 @@ from django.db.models import (
 )
 from django.db.models.manager import Manager
 
-
 # Create your models here.
 class BaseDisplayedManager(Manager):
     """

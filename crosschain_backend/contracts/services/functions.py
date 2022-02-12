@@ -308,12 +308,6 @@ def _get_signature(
             blockchain_id,
         )
 
-        _check_is_processed_transaction(
-            contract,
-            original_txn_hash,
-            hashed_params,
-        )
-
     return remove_0x_prefix(
         _sign_hash(
             hash=hashed_params,

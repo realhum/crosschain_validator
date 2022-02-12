@@ -1,12 +1,10 @@
-from django.test import TestCase
-
-from add_contracts import FULL_ABI
+from base.tests import BaseTestCase
 from contracts.models import Contract
 from networks.models import Network, CustomRpcProvider
 from .models import ValidatorSwap
 
 
-class ValidatorTestCase(TestCase):
+class ValidatorTestCase(BaseTestCase):
     transaction_hash = "0xb735a892bc6504976c8d1953d56fa5122546c9bbb3e8770d4083430363285999"
     event_data = {
         "args": {
@@ -22,41 +20,6 @@ class ValidatorTestCase(TestCase):
         "transactionIndex": 71,
     }
     signature = "44e35055e9fc46d382f9cab03d418e88ab84fb86994ee0339390be5b2bc181237a22830e9eb1239be2693a918f9b7892aa6d787959389c2c7c255a2c5a3c15c01b"
-
-    def setUp(self):
-        bsc_network = Network.displayed_objects.create(
-            title='binance-smart-chain',
-            rpc_url_list=[
-                "https://bsc-dataseed.binance.org/",
-            ],
-        )
-        eth_network = Network.displayed_objects.create(
-            title='ethereum',
-            rpc_url_list=[
-                "https://api.mycryptoapi.com/eth",
-                "https://rpc.flashbots.net/",
-                "https://eth-mainnet.gateway.pokt.network/v1/5f3453978e354ab992c4da79",
-            ],
-        )
-
-        Contract.displayed_objects.create(
-            title='RUBIC_SWAP_CONTRACT_IN_BSC_PROD_READY',
-            type=Contract.TYPE_CROSSCHAIN_ROUTING,
-            address='0x70e8C8139d1ceF162D5ba3B286380EB5913098c4',
-            network=bsc_network,
-            hash_of_creation='0x9902f3cf707ce064d17b4c2368c8f6b2551a70943f7c3429321842e9d2c55dcf',
-            blockchain_number=1,
-            abi=FULL_ABI,
-        )
-        Contract.displayed_objects.create(
-            title='RUBIC_SWAP_CONTRACT_IN_ETH_PROD_READY',
-            type=Contract.TYPE_CROSSCHAIN_ROUTING,
-            address='0xD8b19613723215EF8CC80fC35A1428f8E8826940',
-            network=eth_network,
-            hash_of_creation='0xcb99d1cc4ee13668087c2f8fcbe3c1f0b6a1e9bc682026fd03ffad5bda882843',
-            blockchain_number=2,
-            abi=FULL_ABI,
-        )
 
     def test_validator_swap_create(self):
         rpc_provider = CustomRpcProvider(
@@ -91,7 +54,7 @@ class ValidatorTestCase(TestCase):
         )
         contract = Contract.get_contract_by_blockchain_id(1)
 
-        validator_swap =ValidatorSwap.create_swap(
+        validator_swap = ValidatorSwap.create_swap(
             rpc_provider=rpc_provider,
             contract=contract,
             txn_hash=self.transaction_hash,
